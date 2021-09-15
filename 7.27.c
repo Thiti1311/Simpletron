@@ -32,7 +32,7 @@ int main(){
 
     for(i=0; i<100;i++){
         fflush(stdin);
-        scanf("%c%5d", &sinal[i], &comandos[i]);
+        scanf("%c%4d", &sinal[i], &comandos[i]);
         verifica = verificar_comando(sinal[i], comandos[i]);
         if(verifica==1){
             printf("acabaram os comandos\n");
@@ -109,7 +109,7 @@ int verificar_comando(char str, int num){
     if (str == '+'){
         return 0;
     }else if (str == '-'){
-        if ( num == 99999){
+        if (num == 99999){
             return 1;
         }else{
             return 2;
