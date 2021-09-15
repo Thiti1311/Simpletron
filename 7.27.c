@@ -1,7 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-/*
+
+#define TAM 5
 // Definição dos comandos
 // ----------------------------------------------------------------------------
 #define READ 10
@@ -20,51 +19,93 @@
 #define BRANCHZERO 42
 #define HALT 43
 // ----------------------------------------------------------------------------
-*/
+int verificar_comando(char str, int num);
 int main(){
+    char sinal[TAM];
+    int acumulador = 0000;
+    int comandos[TAM];
+    int i,j;
+    int verifica;
+    int operar, operando;
+    int resultados[TAM];
+    int A,B,k = 0;
 
-    int acumulador;
-    char comandos[100][5];
-    int i = 0, j = 0;
-    int verificar;
-    char sinal;
-    int numero;
-
-    while (i < 5){
+    for(i=0; i<100;i++){
         fflush(stdin);
-        verificar = 0;
-
-        //scanf("%d", &comandos[i]);
-        //scanf("%[^\n]", &comandos[i][i]);
-        scanf("%c%5d", &sinal, &numero);
-        
-        verificar = verificar_comando(sinal, numero);
-
-        if (verificar == 2){
-            printf("entrou aqui\n");
+        scanf("%c%5d", &sinal[i], &comandos[i]);
+        verifica = verificar_comando(sinal[i], comandos[i]);
+        if(verifica==1){
+            printf("acabaram os comandos\n");
             break;
         }
-        i++;
-    }
-/*
-    if (verificar != 2){
-        for (acumulador = 0; acumulador < i; acumulador++){
-            printf("%02d \? %+d", acumulador, comandos[acumulador]);
+        else if(verifica == 0){
+            operando = comandos[i]%100;
+            operar = comandos[i]/100;
+            printf("entrou aqui\n");
+            switch (operar){
+                case READ:
+                    if (k == 0){
+                        printf("Digite A:\t");
+                        scanf("%d", &A);
+                        resultados[operando] = A;
+                    }else{
+                        printf("Digite B:\t");
+                        scanf("%d", &B);
+                        resultados[operando] = B;
+                    }
+                    k++;
+                    break;
+                case WRITE:
+                    resultados[operando] = acumulador;
+                    break;
+                case LOAD:
+                    acumulador += resultados[operando];
+                    break;
+                case STORE:
+                    resultados[operando] = acumulador;
+                    break;
+                case ADD:
+                    acumulador += resultados[operando];
+                    break;
+                case SUBTRACT:
+                    acumulador -= resultados[operando];
+                    break;
+                case DIVIDE:
+                    acumulador /= resultados[operando];
+                    break;
+                case MULTIPLY:
+                    acumulador *= resultados[operando];
+                    break;
+                case BRANCH:
+                    //Desviar para um local especifico da memoria. Como?
+                    break;
+                case BRANCHNEG:
+                    if (acumulador < 0){
+                        resultados[operando] = acumulador;
+                    }
+                    break;
+                case BRANCHZERO:
+                    if (acumulador == 0){
+                        resultados[operando] = acumulador;
+                    }
+                    break;
+                case HALT:
+                    break;
+            }
+            if (operar == HALT){
+                break;
+            }
         }
-    }else{
-        for (acumulador = 0; acumulador < i; acumulador++){
-            printf("%02d \? %+d", acumulador, comandos[acumulador]);
+        else{
+            printf("não entra\n");
         }
-        printf("Erro Encontrado no Comando %02d: %s", acumulador, erros_comando);
     }
-    */
-    for (acumulador = 0; acumulador < i; acumulador++){
-        printf("%02d \? %+d\n", acumulador, comandos[acumulador]);
+    for (j = 0; j < i; j++){
+        printf("%02d \? %+d\n", j, comandos[j]);
     }
     return 0;
 }
 int verificar_comando(char str, int num){
-    
     if (str == '+'){
         return 0;
     }else if (str == '-'){
