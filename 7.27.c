@@ -1,5 +1,7 @@
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <string.h>
+/*
 // Definição dos comandos
 // ----------------------------------------------------------------------------
 #define READ 10
@@ -18,27 +20,60 @@
 #define BRANCHZERO 42
 #define HALT 43
 // ----------------------------------------------------------------------------
-
+*/
 int main(){
 
     int acumulador;
-    int comandos[100];
-    int i = 0;
+    char comandos[100][5];
+    int i = 0, j = 0;
+    int verificar;
+    char sinal;
+    int numero;
 
-    do{
-        scanf("%d", comandos[i]);
-        i++;
+    while (i < 5){
+        fflush(stdin);
+        verificar = 0;
+
+        //scanf("%d", &comandos[i]);
+        //scanf("%[^\n]", &comandos[i][i]);
+        scanf("%c%5d", &sinal, &numero);
         
-    } while (comandos != -99999 || i < 100);
+        verificar = verificar_comando(sinal, numero);
 
-    for (acumulador = 0; acumulador < i; acumulador++){
-        printf("%02d \? %+d", acumulador, comandos[acumulador]);
+        if (verificar == 2){
+            printf("entrou aqui\n");
+            break;
+        }
+        i++;
     }
-    
 /*
-   for (i = 0; i <= 99; i++){
-       printf("%02d\t", i);
-   }
-*/
+    if (verificar != 2){
+        for (acumulador = 0; acumulador < i; acumulador++){
+            printf("%02d \? %+d", acumulador, comandos[acumulador]);
+        }
+    }else{
+        for (acumulador = 0; acumulador < i; acumulador++){
+            printf("%02d \? %+d", acumulador, comandos[acumulador]);
+        }
+        printf("Erro Encontrado no Comando %02d: %s", acumulador, erros_comando);
+    }
+    */
+    for (acumulador = 0; acumulador < i; acumulador++){
+        printf("%02d \? %+d\n", acumulador, comandos[acumulador]);
+    }
     return 0;
+}
+int verificar_comando(char str, int num){
+    
+    if (str == '+'){
+        return 0;
+    }else if (str == '-'){
+        if ( num == 99999){
+            return 1;
+        }else{
+            return 2;
+        }
+    }else{
+        return 2;
+    }
 }
