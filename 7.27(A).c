@@ -3,7 +3,7 @@
 #include <locale.h>
 
 #define TAM 5
-// DefiniÃ§Ã£o dos comandos
+// Definição dos comandos
 //-------------------------------------------------------------------------
 #define READ 10
 #define WRITE 11
@@ -13,36 +13,49 @@
 int main(){
     setlocale(LC_ALL, "Portuguese");
 
-    int i;
+    int i,j, maior = 0;
     int comando[10];
     char sinal[10];
-    int valores_lidos[10];
-    char sinal_de_valores[10];
     int operando, operar;
-    int acumulador;
 
     printf("*** Bem vindo ao Simpletron!                        ***\n");
-    printf("*** Favor digitar seu programa, uma instruÃ§Ã£o       ***\n");
+    printf("*** Favor digitar seu programa, uma instrução       ***\n");
     printf("*** (ou palavra de dados) por vez. Mostrarei        ***\n");
-    printf("*** o nÃºmero do local e uma interrogaÃ§Ã£o (?).       ***\n");
-    printf("*** VocÃª, entÃ£o, deverÃ¡ digitar a palavra para esse ***\n");
+    printf("*** o número do local e uma interrogação (?).       ***\n");
+    printf("*** Você, então, deverá digitar a palavra para esse ***\n");
     printf("*** local. Digite a sentinela +4300 para            ***\n");
     printf("*** encerrar a entrada do seu programa.             ***\n");
 
     for(i = 0; i < TAM; i++){
         fflush(stdin);
-        scanf("%c%4d",&sinal[i],&comando[i]);
+        scanf("%c%4d", &sinal[i], &comando[i]);
+
+        operando = comando[i]%100;
+        operar = comando[i]/100;
+
+        if (operando > maior){
+            maior = operando;
+        }
         if (sinal[i] == '+' && comando[i] == 4300){
             break;
         }
     }
-    for(i = 0; i < TAM; i++){
-        printf("%02d \? %c%4d",&sinal[i],&comando[i]);
+
+    for(j = 0; j < i; j++){
+        printf("%02d \? %c%4d\n", j, sinal[j],comando[j]);
     }
-    printf("\n*** Carga do programa concluÃ­da ***\n");
-    printf("*** Iniciando execuÃ§Ã£o do programa ***\n");
+    printf("*** Carga do programa concluída    ***\n");
+    printf("*** Iniciando execução do programa ***\n");
 
     system("pause");
+
+    int valores_lidos[maior];
+    char sinal_de_valores[10];
+    int acumulador = 0;
+
+    for (i = 0; i <= maior; i++){
+        valores_lidos[i] = 0;
+    }
 
     for (i = 0; i < TAM; i++){
 
@@ -53,25 +66,24 @@ int main(){
         {
         case READ:
             fflush(stdin);
-            printf("Digite o nÃºmero para posiÃ§Ã£o %02d:\t", operando);
-            scanf("%d", valores_lidos[operando]);
+            printf("Digite o número para posição %02d:\t", operando);
+            scanf("%d", &valores_lidos[operando]);
             printf("\n");
             break;
         case WRITE:
-            printf("O nÃºmero de posiÃ§Ã£o %02d:\t%+d\n", operando, valores_lidos[operando]);
+            printf("O número de posição %02d:\t%+d\n", operando, valores_lidos[operando]);
             break;
         case ADD:
-            acumulador = 0;
-            for (i = 0; i < TAM; i++){
+            for (i = 0; i <= maior; i++){
                 acumulador += valores_lidos[i];
             }
-            printf("Soma de todos os nÃºmeros inseridos:\t%+d\n", acumulador);
+            printf("Soma de todos os números inseridos:\t%+d\n", acumulador);
             break;
         case HALT:
             break;
         }
         if (comando[i] == HALT){
-            printf("*** ExecuÃ§Ã£o do Simpletron encerrada ***\n");
+            printf("*** Execução do Simpletron encerrada ***\n");
             break;
         }
     }
