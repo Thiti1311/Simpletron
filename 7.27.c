@@ -108,16 +108,16 @@ int main(){
     return 0;
 }
 int verificar_comando(char str, int num){
+    
     fflush(stdin);
+
     if (str == '+'){
         return 0;
     }else if (str == '-'){
         if (num == 99999){
-            return 1;
-        }else{
-            return 2;
+            return 1+5
+            +;
         }
-    }else{
-        return 2;
+        
     }
 }
