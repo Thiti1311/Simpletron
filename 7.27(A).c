@@ -5,6 +5,9 @@
 //Operações de entrada/saída:
 #define READ 10 //Lê uma palavra do terminal para um local específico na memória.
 #define WRITE 11 //Escreve uma palavra de um local específico na memória para o terminal.
+//SOMA E MEDIA
+#define MEDIA 13 //Calcula a média dos 7 elementos inseridos.
+#define SOMA 14 //Calcula a soma dos 10 números inseridos
 //Operações de carregamento/armazenamento:
 #define LOAD 20 //Carrega uma palavra de um local específico na memória para o acumulador.
 #define STORE 21 //Armazena uma palavra do acumulador para um local específico na memória.
@@ -60,6 +63,7 @@ int main(){
     system("pause");
     int valores_lidos[maior];
     int acumulador = 0;
+    int media, soma, cont, num[10];
     for (j = 0; j <= maior; j++){
         valores_lidos[j] = 0;
     }
@@ -111,6 +115,24 @@ int main(){
                     j = operando;
                     continue;
                 } 
+                break;
+            case MEDIA:
+                media = 0;
+                printf("Digite sete números para calcular a média: ");
+                for(cont = 0; cont < 7; cont++){
+                    scanf("%d", &num[cont]);
+                    media += num[cont];
+                }
+                printf("Média = %d\n", media/7);
+                break;
+            case SOMA:
+                soma = 0;
+                printf("Digite dez números para calcular a soma: ");
+                for(cont = 0; cont < 10; cont++){
+                    scanf("%d", &num[cont]);
+                    soma += num[cont];
+                }
+                printf("Soma = %d\n", soma);
                 break;
             case HALT: 
                 break;
