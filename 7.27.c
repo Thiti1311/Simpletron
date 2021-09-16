@@ -30,11 +30,13 @@ int main(){
     int resultados[TAM];
     int A,B,k = 0;
 
-    for(i=0; i<100;i++){
+    for(i = 0; i < 100; i++){
         fflush(stdin);
-        scanf("%c%4d", &sinal[i], &comandos[i]);
+        scanf("%c%5d", &sinal[i], &comandos[i]);
+
         verifica = verificar_comando(sinal[i], comandos[i]);
-        if(verifica==1){
+
+        if(verifica == 1){
             printf("acabaram os comandos\n");
             break;
         }
@@ -106,6 +108,7 @@ int main(){
     return 0;
 }
 int verificar_comando(char str, int num){
+    fflush(stdin);
     if (str == '+'){
         return 0;
     }else if (str == '-'){
