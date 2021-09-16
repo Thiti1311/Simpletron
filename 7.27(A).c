@@ -49,7 +49,7 @@ int main(){
     }
     sentinela = maior;
     for(j = 0; j <= sentinela; j++){
-        if (j < i){
+        if (j <= i){
             printf("%02d \? %c%4d\n", j, sinal[j],comando[j]);
         }else{
             sinal[j] = '+';
