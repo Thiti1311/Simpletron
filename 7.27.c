@@ -1,123 +1,157 @@
 #include <stdio.h>
-
-#define TAM 5
-// Definição dos comandos
-// ----------------------------------------------------------------------------
-#define READ 10
-#define WRITE 11
-// ----------------------------------------------------------------------------
-#define LOAD 20
-#define STORE 21
-// ----------------------------------------------------------------------------
-#define ADD 30
-#define SUBTRACT 31
-#define DIVIDE 32
-#define MULTIPLY 33
-// ----------------------------------------------------------------------------
-#define BRANCH 40
-#define BRANCHNEG 41
-#define BRANCHZERO 42
-#define HALT 43
-// ----------------------------------------------------------------------------
-int verificar_comando(char str, int num);
+#include <stdlib.h>
+#include <locale.h>
+#define TAM 10
+#define VAL 00
+//Operações de entrada/saída:
+#define READ 10 //Lê uma palavra do terminal para um local específico na memória.
+#define WRITE 11 //Escreve uma palavra de um local específico na memória para o terminal.
+//SOMA E MEDIA
+#define MEDIA 13 //Calcula a média dos 7 elementos inseridos.
+#define SOMA 14 //Calcula a soma dos 10 números inseridos
+//Operações de carregamento/armazenamento:
+#define LOAD 20 //Carrega uma palavra de um local específico na memória para o accumulator.
+#define STORE 21 //Armazena uma palavra do accumulator para um local específico na memória.
+//Operações aritméticas:
+#define ADD 30 //Soma uma palavra de um local específico na memória à palavra no accumulator (deixa o resultado no accumulator).
+#define SUBTRACT 31 //Subtrai uma palavra de um local específico na memória da palavra no accumulator (deixa o resultado no accumulator).
+#define DIVIDE 32 //Divide uma palavra de um local específico na memória pela palavra no accumulator (deixa o resultado no accumulator).
+#define MULTIPLY 33 //Multiplica uma palavra de um local específico na memória pela palavra no accumulator (deixa o resultado no accumulator).
+//Operações de transferência de controle:
+#define BRANCH 40 //Desvia para um local específico na memória.
+#define BRANCHNEG 41 //Desvia para um local específico na memória se o accumulator for negativo.
+#define BRANCHZERO 42 //Desvia para um local específico na memória se o accumulator for zero.
+#define HALT 43 //Para (halt), ou seinstructionCountera, o programa concluiu sua tarefa.
 int main(){
-    char sinal[TAM];
-    int acumulador = 0000;
-    int comandos[TAM];
-    int i,j;
-    int verifica;
-    int operar, operando;
-    int resultados[TAM];
-    int A,B,k = 0;
+    setlocale(LC_ALL, "Portuguese");
 
-    for(i = 0; i < 100; i++){
-        fflush(stdin);
-        scanf("%c%5d", &sinal[i], &comandos[i]);
+    int instructionCounter;
+    int memory[100]; 
+    char sinal[100];
+    int operand, operationCode;
+    int instructionRegister;
+    int accumulator = 0;
+    int linha, coluna, k = 0, l = 0;
 
-        verifica = verificar_comando(sinal[i], comandos[i]);
-
-        if(verifica == 1){
-            printf("acabaram os comandos\n");
-            break;
-        }
-        else if(verifica == 0){
-            operando = comandos[i]%100;
-            operar = comandos[i]/100;
-            printf("entrou aqui\n");
-            switch (operar){
-                case READ:
-                    if (k == 0){
-                        printf("Digite A:\t");
-                        scanf("%d", &A);
-                        resultados[operando] = A;
-                    }else{
-                        printf("Digite B:\t");
-                        scanf("%d", &B);
-                        resultados[operando] = B;
-                    }
-                    k++;
-                    break;
-                case WRITE:
-                    resultados[operando] = acumulador;
-                    break;
-                case LOAD:
-                    acumulador += resultados[operando];
-                    break;
-                case STORE:
-                    resultados[operando] = acumulador;
-                    break;
-                case ADD:
-                    acumulador += resultados[operando];
-                    break;
-                case SUBTRACT:
-                    acumulador -= resultados[operando];
-                    break;
-                case DIVIDE:
-                    acumulador /= resultados[operando];
-                    break;
-                case MULTIPLY:
-                    acumulador *= resultados[operando];
-                    break;
-                case BRANCH:
-                    //Desviar para um local especifico da memoria. Como?
-                    break;
-                case BRANCHNEG:
-                    if (acumulador < 0){
-                        resultados[operando] = acumulador;
-                    }
-                    break;
-                case BRANCHZERO:
-                    if (acumulador == 0){
-                        resultados[operando] = acumulador;
-                    }
-                    break;
-                case HALT:
-                    break;
-            }
-            if (operar == HALT){
-                break;
-            }
-        }
-        else{
-            printf("não entra\n");
-        }
+    for (instructionCounter = 0; instructionCounter < 100; instructionCounter++){
+            memory[instructionCounter] = 0;
     }
-    for (j = 0; j < i; j++){
-        printf("%02d \? %+d\n", j, comandos[j]);
+
+    instructionCounter = 0;
+
+    printf("*** Bem vindo ao Simpletron!                        ***\n");
+    printf("*** Favor digitar seu programa, uma instrução       ***\n");
+    printf("*** (ou palavra de dados) por vez. Mostrarei        ***\n");
+    printf("*** o número do local e uma interrogação (?).       ***\n");
+    printf("*** Você, então, deverá digitar a palavra para esse ***\n");
+    printf("*** local. Digite a sentinela -9999 para            ***\n");
+    printf("*** encerrar a entrada do seu programa.             ***\n");
+    
+    while (instructionCounter < 100){
+        fflush(stdin);
+        
+        printf("%02d \? ", instructionCounter);
+        scanf("%c%4d", &sinal[instructionCounter], &memory[instructionCounter]);
+
+        if (sinal[instructionCounter] == '-' && memory[instructionCounter] == 9999){
+            break;
+        }else if (sinal[instructionCounter] == '-' && memory[instructionCounter] != 9999){
+            memory[instructionCounter] *= -1;
+        }
+        instructionCounter++;
+        k++;
+    }
+
+    printf("*** Carga do programa concluída    ***\n");
+    printf("*** Iniciando execução do programa ***\n");
+    system("pause");
+
+    instructionCounter = 0;
+
+    while(operationCode != HALT){
+
+        instructionRegister = memory[instructionCounter];
+
+        operationCode = instructionRegister / 100;
+        operand = instructionRegister  % 100;
+        
+        switch (operationCode){
+            case VAL:
+                memory[instructionCounter] = operand;
+                break;
+            case READ:
+                printf("\? ");
+                scanf("%d", &memory[operand]);
+                break;
+            case WRITE:
+                printf("Valor na memória da linha %02d: %d\n", operand, memory[operand]);
+                break;
+            case LOAD:
+                accumulator = memory[operand];
+                break;
+            case STORE:
+                memory[operand] = accumulator;
+                break;
+            case ADD:
+                accumulator += memory[operand];
+                break;
+            case SUBTRACT:
+                accumulator -= memory[operand];
+                break;
+            case DIVIDE:
+                if (memory[operand] == 0 || accumulator == 0){
+                    printf("*** Tentativa de divisão por zero ***\n*** Execução do Simpletron encerrada de forma anormal. ***\n");
+                    operationCode = HALT;
+                    continue;
+                }else{
+                    accumulator /= memory[operand];
+                }
+                break;
+            case MULTIPLY:
+                accumulator *= memory[operand];
+                break;
+            case BRANCH:
+                instructionCounter = operand;
+                break;
+            case BRANCHNEG:
+                if (accumulator < 0){
+                    instructionCounter = operand;
+                    continue;
+                }else{
+                    break;
+                }
+            case BRANCHZERO:
+                if (accumulator == 0){
+                    instructionCounter = operand;
+                    continue;
+                }else{
+                    break;
+                }
+            case HALT: 
+                printf("REGISTERS:\naccumulator %+04d\ninstructionCounter %02d\ninstructionRegister %+04d\noperationCode %02d\noperand %02d\n", accumulator, instructionCounter, instructionRegister, operationCode, operand);
+                printf("\nMemory:\n");
+                for (linha = 0; linha <= k; linha++){
+                    printf("%+4d\t", memory[linha]);
+                    /*for (coluna = 0; coluna <= 9; coluna++){
+                        if (linha == 0 && coluna == 0){
+                            printf("\t");
+                        }else if (linha == 0){
+                            printf("%d\t", k);
+                            k++;
+                        }else if (coluna == 0){
+                            printf("%d\t", l);
+                            l += 10;
+                        }else {
+                            printf("%+05d\t", memory[linha][coluna]);
+                        }
+            
+                    }
+                    printf("\n");*/
+                }
+                printf("*** Execução do Simpletron encerrada ***\n");
+                break;
+        }
+        instructionCounter++;
     }
     return 0;
-}
-int verificar_comando(char str, int num){
-    
-    fflush(stdin);
-
-    if (str == '+'){
-        return 0;
-    }else if (str == '-'){
-        if (num == 99999){
-            return 1+5
-            +;
-        }
-        
-    }
 }
