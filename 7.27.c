@@ -31,7 +31,7 @@ int main(){
     int operand, operationCode;
     int instructionRegister;
     int accumulator = 0;
-    int linha, coluna, k = 0, l = 0;
+    int linha;
 
     for (instructionCounter = 0; instructionCounter < 100; instructionCounter++){
             memory[instructionCounter] = 0;
@@ -59,7 +59,6 @@ int main(){
             memory[instructionCounter] *= -1;
         }
         instructionCounter++;
-        k++;
     }
 
     printf("*** Carga do programa concluída    ***\n");
@@ -130,23 +129,6 @@ int main(){
             case HALT: 
                 printf("REGISTERS:\naccumulator %+04d\ninstructionCounter %02d\ninstructionRegister %+04d\noperationCode %02d\noperand %02d\n", accumulator, instructionCounter, instructionRegister, operationCode, operand);
                 printf("\nMemory:\n");
-                //for (linha = 0; linha <= k; linha++){
-                    //printf("%+4d\t", memory[linha]);
-                    /*for (coluna = 0; coluna <= 9; coluna++){
-                        if (linha == 0 && coluna == 0){
-                            printf("\t");
-                        }else if (linha == 0){
-                            printf("%d\t", k);
-                            k++;
-                        }else if (coluna == 0){
-                            printf("%d\t", l);
-                            l += 10;
-                        }else {
-                            printf("%+05d\t", memory[linha][coluna]);
-                        }
-            
-                    }
-                    printf("\n");*/
                 for(linha = 0; linha < 100; linha++){
                     printf(" %+05d ",memory[linha]);
                     if( (linha + 1) %10 == 0){
@@ -155,7 +137,6 @@ int main(){
                 }
                 printf("*** Execução do Simpletron encerrada ***\n");
                 break;
-        //}
         instructionCounter++;
     }
     return 0;
