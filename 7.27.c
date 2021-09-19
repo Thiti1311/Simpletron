@@ -31,7 +31,7 @@ int main(){
     int operand, operationCode;
     int instructionRegister;
     int accumulator = 0;
-    int linha;
+    int i, j = 0;
 
     for (instructionCounter = 0; instructionCounter < 100; instructionCounter++){
             memory[instructionCounter] = 0;
@@ -56,7 +56,8 @@ int main(){
         if (sinal[instructionCounter] == '-' && memory[instructionCounter] == 9999){
             break;
         }else if (sinal[instructionCounter] == '-' && memory[instructionCounter] != 9999){
-            memory[instructionCounter] *= -1;
+            printf("*** Número inválido, digite novamente ***\n");
+            instructionCounter--;
         }
         instructionCounter++;
     }
@@ -83,7 +84,7 @@ int main(){
                 scanf("%d", &memory[operand]);
                 break;
             case WRITE:
-                printf("Valor na memória da linha %02d: %d\n", operand, memory[operand]);
+                printf("Valor na memória da i %02d: %d\n", operand, memory[operand]);
                 break;
             case LOAD:
                 accumulator = memory[operand];
@@ -129,13 +130,31 @@ int main(){
             case HALT: 
                 printf("\nREGISTERS:\naccumulator %+05d\ninstructionCounter %02d\ninstructionRegister %+04d\noperationCode %02d\noperand %02d\n", accumulator, instructionCounter, instructionRegister, operationCode, operand);
                 printf("\nMemory:\n");
-                for(linha = 0; linha < 100; linha++){
-                    printf(" %+05d ",memory[linha]);
-                    if( (linha + 1) %10 == 0){
-                        printf("\n");
+                for(i = 0; i < 10; i++){
+                    if (i == 9){
+                        printf("%d", i);
+                    }else{
+                        printf("%d\t", i);
                     }
                 }
-                printf("*** Execução do Simpletron encerrada ***\n");
+                printf("\n");
+                for(i = 0; i < 100; i++){
+                    if (i == 0){
+                        printf("%d\t", i);
+                    }
+                    printf("%+05d\t",memory[i]);
+                    if (i == 99){
+                        
+                    }
+                    else if( (i + 1) %10 == 0){
+                        printf("\n");
+                        printf("%d\t", i+1);
+                    }
+                }
+                printf("\n*** Execução do Simpletron encerrada ***\n");
+                break;
+            default:
+                printf("*** Comando %d inválido ***\n", operationCode);
                 break;
         }
         instructionCounter++;
