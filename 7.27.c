@@ -131,6 +131,9 @@ int main(){
                 printf("\nREGISTERS:\naccumulator %+05d\ninstructionCounter %02d\ninstructionRegister %+04d\noperationCode %02d\noperand %02d\n", accumulator, instructionCounter, instructionRegister, operationCode, operand);
                 printf("\nMemory:\n");
                 for(i = 0; i < 10; i++){
+                    if (i == 0 ){
+                        printf("\t");
+                    }
                     if (i == 9){
                         printf("%d", i);
                     }else{
