@@ -127,7 +127,7 @@ int main(){
                 }else{
                     break;
                 }
-            case HALT: 
+            case HALT: case 99:
                 printf("\nREGISTERS:\naccumulator %+05d\ninstructionCounter %02d\ninstructionRegister %+04d\noperationCode %02d\noperand %02d\n", accumulator, instructionCounter, instructionRegister, operationCode, operand);
                 printf("\nMemory:\n");
                 for(i = 0; i < 10; i++){
@@ -152,9 +152,6 @@ int main(){
                     }
                 }
                 printf("\n*** Execução do Simpletron encerrada ***\n");
-                break;
-            default:
-                printf("*** Comando %d inválido ***\n", operationCode);
                 break;
         }
         instructionCounter++;
