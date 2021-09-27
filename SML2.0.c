@@ -25,6 +25,8 @@ void sml_menu();
 int validar_operador(int num); 
 
 int main(){
+    //setlocale(LC_ALL, "Portuguese");
+
     int num;
     int instructionCounter;
     int memory[100];
@@ -34,15 +36,16 @@ int main(){
     int operacao[100];
     int operationCode;
     int verificar;
-    char nome[10] = "PROG";
+    char nome[10] = "PROG", arquivo_d[10];
     char aux[4], tamanho;
+
+    FILE *arquivo;
 
     while(num!=4){
         num = menu_mostrar();
         switch (num)
         {
         case 1:
-        
             for (instructionCounter = 0; instructionCounter < 100; instructionCounter++){
                     memory[instructionCounter] = 0;
             }
@@ -67,7 +70,6 @@ int main(){
                 break;
             }
             printf("\nNome do arquivo criado: %s\n", nome);
-            FILE *arquivo;
             arquivo = fopen(nome, "a");
                 if (arquivo == NULL){
                     printf("ERRO! O arquivo nao foi aberto!\n");
@@ -83,7 +85,6 @@ int main(){
                     fflush(stdin);
                     printf("%.2d \? ", instructionCounter);
                     scanf("%c%4d", &sinal[instructionCounter], &memory[instructionCounter]);
-                    //fprintf(arquivo, "%s%4d", sinal[instructionCounter], &memory[instructionCounter]);
                     operationCode = memory[instructionCounter] / 100;
                     if (sinal[instructionCounter] == '-' && memory[instructionCounter] == 9999){
                         break;
@@ -110,18 +111,46 @@ int main(){
 
                 }
                 printf("\n* Carga do programa concluida    *\n");
+                rewind( arquivo );
                 fclose(arquivo);
                 system("pause");
             break;
         case 2:
-
+            
             break;
         case 3:
+            printf("\nEscolha o arquivo para pesquisa/leitura: ");
+            scanf("%s", arquivo_d);
+            
+            arquivo = fopen(arquivo_d, "r");
+            if (arquivo == NULL){
+                    printf("ERRO! O arquivo nao foi encontrado\n");
+            }
+            else
+            {
+                printf("O arquivo foi encontrado!\n");
+//FSCANF TA CERTO?
+                printf( "%-6s%s\n", "Local", "Numero");
+                fscanf(arquivo, "%.2d%c%.4d\n", i, sinal[i], memory[i]);
+                i = 0;
+                while ( !feof( arquivo ) ) {
+                    printf("%5d ", i);
+                    printf("%c%4d\n", sinal[i], memory[i]);
+                    fprintf(arquivo, "%.2d %c%.4d\n", i, sinal[i], memory[i]);
+                    i++;
+
+                }
+            }
+            rewind( arquivo );
+            fclose(arquivo);
+            system("pause");
             break;
-        default:
+        case 4:
+            printf("\n* Fim do programa *\n");
             break;
         }
     }   
+    return 0;
 }
 
 int menu_mostrar(){
