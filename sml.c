@@ -69,8 +69,8 @@ int main(){
         instructionCounter++;
     }
 
-    printf("*** Carga do programa conclu�da    ***\n");
-    printf("*** Iniciando execu��o do programa ***\n");
+    printf("*** Carga do programa concluída    ***\n");
+    printf("*** Iniciando execução do programa ***\n");
     system("pause");
 
     instructionCounter = 0;
@@ -91,7 +91,7 @@ int main(){
                 scanf("%d", &memory[operand]);
                 break;
             case WRITE:
-                printf("Valor na memoria da linha %02d: %d\n", operand, memory[operand]);
+                printf("\nValor na memoria da linha %02d: %d\n", operand, memory[operand]);
                 break;
             case LOAD:
                 accumulator = memory[operand];
@@ -132,7 +132,7 @@ int main(){
                 }
                 break;
             case HALT: case 99:
-                printf("\nREGISTERS:\naccumulator %+05d\ninstructionCounter %02d\ninstructionRegister %+04d\noperationCode %02d\noperand %02d\n", accumulator, instructionCounter, instructionRegister, operationCode, operand);
+                printf("REGISTERS:\naccumulator %+05d\ninstructionCounter %02d\ninstructionRegister %+04d\noperationCode %02d\noperand %02d\n", accumulator, instructionCounter, instructionRegister, operationCode, operand);
                 printf("\nMemory:\n");
                 for(i = 0; i < 10; i++){
                     if (i == 0 ){
