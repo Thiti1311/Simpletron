@@ -25,23 +25,18 @@
 int menu_mostrar();
 void sml_menu();
 int validar_operador(int num); 
-int verificar_existencia(int valor, char string);
 
 int main(){
-    setlocale(LC_ALL, "Portuguese");
+    //setlocale(LC_ALL, "Portuguese");
 
-    int num;
-    int instructionCounter;
-    int memory[100];
-    int num_Arquivo;
-    int i=0;
-    char sinal[100];
-    int operacao[100];
-    int operationCode;
-    int verificar;
-    char nome[10] = "PROG", arquivo_d[15];
-    char aux[4], tamanho;
-    char c;
+    char sinal[100], inter[100];
+    int memory[100], instructionCounter;
+    int operand, operationCode, instructionRegister;
+    int accumulator = 0;
+    int i, verificar;
+    int num, car_exe, teste, tamanho;
+    int num_Arquivo = 1;
+    char arquivo_d[15], aux[4], c, date_c[100], date_e[100], date_s[100];
 
     struct tm *data_hora_atual;     
     time_t segundos;
@@ -51,9 +46,10 @@ int main(){
     FILE *arquivo;
 
     while(num!=4){
-        num = menu_mostrar();
-        switch (num)
-        {
+    char nome[15] = "PROG";
+    num = menu_mostrar();
+    switch (num)
+    {
         case 1:
             for (instructionCounter = 0; instructionCounter < 100; instructionCounter++){
                     memory[instructionCounter] = 0;
@@ -79,7 +75,7 @@ int main(){
                 break;
             }
             printf("\nNome do arquivo criado: %s\n", nome);
-            arquivo = fopen(nome, "a");
+            arquivo = fopen(nome, "w");
                 if (arquivo == NULL){
                     printf("ERRO! O arquivo nao foi aberto!\n");
                 }
@@ -112,10 +108,11 @@ int main(){
                     instructionCounter++;
                 }
                 i = 0;
-                fprintf(arquivo, "%02d:%02d %02d/%02d/%4d\n", data_hora_atual->tm_hour,data_hora_atual->tm_min, data_hora_atual->tm_mday, data_hora_atual->tm_mon+1,data_hora_atual->tm_year+1900);
+                fprintf(arquivo, "%s %02d:%02d %s %02d/%02d/%4d\n", "Criado as:", data_hora_atual->tm_hour,data_hora_atual->tm_min,"em",data_hora_atual->tm_mday, data_hora_atual->tm_mon+1,data_hora_atual->tm_year+1900);
+
+               fprintf(arquivo, "Executado as: --:-- em --/--/----\n");
+
                 while(i < instructionCounter){
-                    //printf("%.2d \? ", i);
-                    //printf("%c%4d\n", sinal[i], memory[i]);
                     fprintf(arquivo, "%.2d \? %c%.4d\n", i, sinal[i], memory[i]);
                     i++;
                 }
@@ -124,13 +121,149 @@ int main(){
                 fclose(arquivo);
                 system("pause");
             break;
-        case 2:
-            
+        case 2:  
+            printf("* Para executar o programa, infrome o nome do arquivo : (Ex.PROG002)\n");
+            scanf("%s", arquivo_d);
+            strcat(arquivo_d, ".txt");
+
+            arquivo = fopen(arquivo_d, "r+");
+            if (arquivo == NULL){
+                printf("ERRO! O arquivo nao foi encontrado\n");
+            }
+            else
+            {
+                printf("O arquivo foi encontrado!\n");
+
+                for (instructionCounter = 0; instructionCounter < 100; instructionCounter++){
+                    memory[instructionCounter] = 0;
+                }
+                instructionCounter = 0;
+
+                fgets(date_c,31,arquivo);
+                printf("%s\n", date_c);
+
+                //fgets(date_e,34,arquivo);
+                /*
+                fprintf(arquivo, "%s %02d:%02d %s %02d/%02d/%4d\n", "Executado as:", data_hora_atual->tm_hour,data_hora_atual->tm_min,"em",data_hora_atual->tm_mday, data_hora_atual->tm_mon+1,data_hora_atual->tm_year+1900);
+                
+*/
+                //fseek(arquivo, 45, SEEK_CUR);
+                //fputs(arquivo, " 22:48 em 28/09/2021");
+
+                //fgets(date_s,34,arquivo);
+                //fgets(date_e,34,arquivo);
+
+                while ((fscanf(arquivo, "%d %c %c%d\n", &i, &inter[instructionCounter], &sinal[instructionCounter], &memory[instructionCounter])) != EOF)
+                {
+                    printf("%02d %c%04d\n",i, sinal[instructionCounter],memory[instructionCounter]);
+        
+                    instructionCounter++;
+                }
+
+                rewind( arquivo );
+                fclose(arquivo);
+                
+                printf("\n* Carga do programa concluida    *\n");
+                printf("* Iniciando execução do programa   *\n");
+                system("pause");
+
+                instructionCounter = 0;
+                operationCode = 0;
+
+                while(operationCode != HALT){
+
+                    instructionRegister = memory[instructionCounter];
+                    instructionCounter++;    
+                    operationCode = instructionRegister / 100;
+                    operand = instructionRegister  % 100;
+                        
+                    switch (operationCode){
+                        case VAL:
+                            memory[instructionCounter - 1] = operand;
+                            break;
+                        case READ:
+                            printf("\? ");
+                            scanf("%d", &memory[operand]);
+                            break;
+                        case WRITE:
+                            printf("Valor na memoria da linha %02d: %d\n",   operand, memory[operand]);
+                            break;
+                        case LOAD:
+                            accumulator = memory[operand];
+                            break;
+                        case STORE:
+                            memory[operand] = accumulator;
+                            break;
+                        case ADD:
+                            accumulator += memory[operand];
+                            break;
+                        case SUBTRACT:
+                            accumulator -= memory[operand];
+                            break;
+                        case DIVIDE:
+                            if (memory[operand] == 0 || accumulator == 0){
+                                printf("*** Tentativa de divisão por zero ***\n*** Execução do Simpletron encerrada de forma anormal. ***\n");
+                                operationCode = HALT;
+                                continue;
+                            }else{
+                                accumulator /= memory[operand];
+                            }
+                            break;
+                        case MULTIPLY:
+                            accumulator *= memory[operand];
+                            break;
+                        case BRANCH:
+                            instructionCounter = operand;
+                            break;
+                        case BRANCHNEG:
+                            if (accumulator < 0){
+                                instructionCounter = operand;
+                            }
+                            break;
+                        case BRANCHZERO:
+                            if (accumulator == 0){
+                                instructionCounter = operand;
+                                continue;
+                            }
+                            break;
+                        case HALT: case 99:
+                            printf("REGISTERS:\naccumulator %+05d\ninstructionCounter %02d\ninstructionRegister %+04d\noperationCode %02d\noperand %02d\n", accumulator, instructionCounter, instructionRegister, operationCode, operand);
+                            printf("\nMemory:\n");
+                            for(i = 0; i < 10; i++){
+                                if (i == 0 ){
+                                    printf("\t");
+                                }
+                                if (i == 9){
+                                    printf("%d", i);
+                                }else{
+                                    printf("%d\t", i);
+                                }
+                            }
+                            printf("\n");
+                            for(i = 0; i < 100; i++){
+                                if (i == 0){
+                                   printf("%d\t", i);
+                                }
+                                printf("%+05d\t",memory[i]);
+                                if (i == 99){
+                                        
+                                }
+                                else if( (i + 1) %10 == 0){
+                                    printf("\n");
+                                    printf("%d\t", i+1);
+                                }
+                            }
+                            printf("\n*** Execução do Simpletron encerrada ***\n");
+                            break;
+                    }
+                }
+            }
             break;
         case 3:
-            printf("Informe o nome do arquivo para pesquisa/leitura: ");
+            printf("\nInforme o nome do arquivo para pesquisa/leitura: (Ex.PROG002)\n");
             scanf("%s", arquivo_d);
-            
+            strcat(arquivo_d, ".txt");
+
             arquivo = fopen(arquivo_d, "r");
             if (arquivo == NULL){
                     printf("ERRO! O arquivo nao foi encontrado\n");
@@ -147,8 +280,6 @@ int main(){
                 }
                 printf("\n");
             
-                fclose(arquivo);
-            
             }
             rewind( arquivo );
             fclose(arquivo);
@@ -161,16 +292,29 @@ int main(){
     }   
     return 0;
 }
-
 int menu_mostrar(){
     int escolha;
+    int teste = 0;
     
-    printf("* 1 - Digitar um novo codigo                 *\n");
-    printf("* 2 - Executar/carregar um codigo da memoria *\n");
-    printf("* 3 - Pesquisar um codigo existente          *\n");
-    printf("* 4 - Encerrar o programa                    *\n");
-    scanf("%d", &escolha);
-
+    while (teste == 0)
+    {
+        printf("\n");
+        printf("* Escolha uma das opções informadas abaixo   *\n");
+        printf("* 1 - Digitar um novo codigo                 *\n");
+        printf("* 2 - Executar/carregar um codigo da memoria *\n");
+        printf("* 3 - Pesquisar um codigo existente          *\n");
+        printf("* 4 - Encerrar o programa                    *\n");
+        scanf("%d", &escolha);
+        if (escolha == 1 || escolha == 2 ||escolha == 3 || escolha == 4)
+        {
+            teste = 1;
+        }
+        else
+        {
+            printf("Escolha inválida, tente novamente.\n");
+        }
+    }
+    
     return escolha;
 }
 void sml_menu(){
@@ -182,6 +326,9 @@ void sml_menu(){
     printf("* Voce, entao, devera digitar a palavra para esse *\n");
     printf("* local. Digite a sentinela -9999 para            *\n");
     printf("* encerrar a entrada do seu programa.             *\n");
+}
+void sml_exe(){
+    printf("* Bem vindo ao Simpletron!                        *\n");
 }
 int validar_operador(int num){
     switch (num){
@@ -228,33 +375,4 @@ int validar_operador(int num){
             default:
             return 1;
     }
-}
-int verificar_existencia(int valor, char string){
-    int tam;
-    char aux;
-    FILE *arquivo;
-        itoa(valor, aux, 10);
-            tam = strlen(aux);
-            switch (tam)
-            {
-            case 1:
-                strcat(string, "00");
-                strcat(string, aux);
-                strcat(string, ".txt");
-                break;
-            case 2:
-                strcat(string, "0");
-                strcat(string, aux);
-                strcat(string, ".txt");
-                break;
-            case 3:
-                strcat(string, aux);
-                strcat(string, ".txt");
-                break;
-            }
-    arquivo = fopen(string, "r");
-    while ((arquivo = fopen(string, "r"))!= NULL){
-        valor++;
-    }
-    return valor;
 }
