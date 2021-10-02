@@ -6,21 +6,21 @@
 #include <time.h>
 
 #define VAL 00
-//Operaes de entrada/sada:
-#define READ 10 //L uma palavra do terminal para um local especfico na memria.
-#define WRITE 11 //Escreve uma palavra de um local especfico na memria para o terminal.
-//Operaes de carregamento/armazenamento:
-#define LOAD 20 //Carrega uma palavra de um local especfico na memria para o accumulator.
-#define STORE 21 //Armazena uma palavra do accumulator para um local especfico na memria.
-//Operaes aritmticas:
-#define ADD 30 //Soma uma palavra de um local especfico na memria  palavra no accumulator (deixa o resultado no accumulator).
-#define SUBTRACT 31 //Subtrai uma palavra de um local especfico na memria da palavra no accumulator (deixa o resultado no accumulator).
-#define DIVIDE 32 //Divide uma palavra de um local especfico na memria pela palavra no accumulator (deixa o resultado no accumulator).
-#define MULTIPLY 33 //Multiplica uma palavra de um local especfico na memria pela palavra no accumulator (deixa o resultado no accumulator).
-//Operaes de transferncia de controle:
-#define BRANCH 40 //Desvia para um local especfico na memria.
-#define BRANCHNEG 41 //Desvia para um local especfico na memria se o accumulator for negativo.
-#define BRANCHZERO 42 //Desvia para um local especfico na memria se o accumulator for zero.
+//OperaÂÂes de entrada/saÂda:
+#define READ 10 //LÂ uma palavra do terminal para um local especÂfico na memÂria.
+#define WRITE 11 //Escreve uma palavra de um local especÂfico na memÂria para o terminal.
+//OperaÂÂes de carregamento/armazenamento:
+#define LOAD 20 //Carrega uma palavra de um local especÂfico na memÂria para o accumulator.
+#define STORE 21 //Armazena uma palavra do accumulator para um local especÂfico na memÂria.
+//OperaÂÂes aritmÂticas:
+#define ADD 30 //Soma uma palavra de um local especÂfico na memÂria Â palavra no accumulator (deixa o resultado no accumulator).
+#define SUBTRACT 31 //Subtrai uma palavra de um local especÂfico na memÂria da palavra no accumulator (deixa o resultado no accumulator).
+#define DIVIDE 32 //Divide uma palavra de um local especÂfico na memÂria pela palavra no accumulator (deixa o resultado no accumulator).
+#define MULTIPLY 33 //Multiplica uma palavra de um local especÂfico na memÂria pela palavra no accumulator (deixa o resultado no accumulator).
+//OperaÂÂes de transferÂncia de controle:
+#define BRANCH 40 //Desvia para um local especÂfico na memÂria.
+#define BRANCHNEG 41 //Desvia para um local especÂfico na memÂria se o accumulator for negativo.
+#define BRANCHZERO 42 //Desvia para um local especÂfico na memÂria se o accumulator for zero.
 #define HALT 43 //Para (halt), ou seinstructionCountera, o programa concluiu sua tarefa.
 int menu_mostrar();
 void sml_menu();
@@ -38,6 +38,8 @@ int main(){
     int num_Arquivo = 1;
     char arquivo_d[15], aux[4], c, date_c[100], date_e[100], date_s[100];
 
+    int existe;
+
     struct tm *data_hora_atual;     
     time_t segundos;
     time(&segundos);   
@@ -46,7 +48,7 @@ int main(){
     FILE *arquivo;
 
     while(num!=4){
-    char nome[15] = "PROG";
+    char nome[15];
     num = menu_mostrar();
     switch (num)
     {
@@ -54,26 +56,43 @@ int main(){
             for (instructionCounter = 0; instructionCounter < 100; instructionCounter++){
                     memory[instructionCounter] = 0;
             }
-            num_Arquivo++;
-            itoa(num_Arquivo, aux, 10);
-            tamanho = strlen(aux);
-            switch (tamanho)
+            existe = 0;
+            while (existe == 0)
             {
-            case 1:
-                strcat(nome, "00");
-                strcat(nome, aux);
-                strcat(nome, ".txt");
-                break;
-            case 2:
-                strcat(nome, "0");
-                strcat(nome, aux);
-                strcat(nome, ".txt");
-                break;
-            case 3:
-                strcat(nome, aux);
-                strcat(nome, ".txt");
-                break;
+                strcpy(nome, "PROG");
+                itoa(num_Arquivo, aux, 10);
+                tamanho = strlen(aux);
+                switch (tamanho)
+                {
+                case 1:
+                    strcat(nome, "00");
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                case 2:
+                    strcat(nome, "0");
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                case 3:
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                }
+                arquivo = fopen(nome, "r");
+                if (arquivo == NULL){
+                    //printf("O arquivo %s nao existe!\n", nome);
+                    existe == 1;
+                    break;
+                }
+                else
+                {
+                    //printf("O arquivo %s ja existe!\n", nome);
+                }
+                fclose(arquivo);
+                num_Arquivo++;
             }
+
             printf("\nNome do arquivo criado: %s\n", nome);
             arquivo = fopen(nome, "w");
                 if (arquivo == NULL){
@@ -164,7 +183,7 @@ int main(){
                 fclose(arquivo);
                 
                 printf("\n* Carga do programa concluida    *\n");
-                printf("* Iniciando execução do programa   *\n");
+                printf("* Iniciando execuÃ§Ã£o do programa   *\n");
                 system("pause");
 
                 instructionCounter = 0;
@@ -202,7 +221,7 @@ int main(){
                             break;
                         case DIVIDE:
                             if (memory[operand] == 0 || accumulator == 0){
-                                printf("*** Tentativa de divisão por zero ***\n*** Execução do Simpletron encerrada de forma anormal. ***\n");
+                                printf("*** Tentativa de divisÃ£o por zero ***\n*** ExecuÃ§Ã£o do Simpletron encerrada de forma anormal. ***\n");
                                 operationCode = HALT;
                                 continue;
                             }else{
@@ -253,20 +272,60 @@ int main(){
                                     printf("%d\t", i+1);
                                 }
                             }
-                            printf("\n*** Execução do Simpletron encerrada ***\n");
+                            printf("\n*** ExecuÃ§Ã£o do Simpletron encerrada ***\n");
                             break;
                     }
                 }
             }
             break;
         case 3:
-            printf("\nInforme o nome do arquivo para pesquisa/leitura: (Ex.PROG002)\n");
+
+            printf("Arquivos existentes: \n");
+
+            existe = 0;
+            while (existe == 0)
+            {
+                strcpy(nome, "PROG");
+                itoa(num_Arquivo, aux, 10);
+                tamanho = strlen(aux);
+                switch (tamanho)
+                {
+                case 1:
+                    strcat(nome, "00");
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                case 2:
+                    strcat(nome, "0");
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                case 3:
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                }
+                arquivo = fopen(nome, "r");
+                if (arquivo == NULL){
+                    //printf("O arquivo %s nao existe!\n", nome);
+                    existe == 1;
+                    break;
+                }
+                else
+                {
+                    printf("%s\n", nome);
+                }
+                fclose(arquivo);
+                num_Arquivo++;
+            }
+
+            printf("\nInforme o nome do arquivo para leitura: (Ex.PROG002)\n");
             scanf("%s", arquivo_d);
             strcat(arquivo_d, ".txt");
 
             arquivo = fopen(arquivo_d, "r");
             if (arquivo == NULL){
-                    printf("ERRO! O arquivo nao foi encontrado\n");
+                printf("ERRO! O arquivo nao foi encontrado\n");
             }
             else
             {
@@ -299,7 +358,7 @@ int menu_mostrar(){
     while (teste == 0)
     {
         printf("\n");
-        printf("* Escolha uma das opções informadas abaixo   *\n");
+        printf("* Escolha uma das opÃ§Ãµes informadas abaixo   *\n");
         printf("* 1 - Digitar um novo codigo                 *\n");
         printf("* 2 - Executar/carregar um codigo da memoria *\n");
         printf("* 3 - Pesquisar um codigo existente          *\n");
@@ -311,7 +370,7 @@ int menu_mostrar(){
         }
         else
         {
-            printf("Escolha inválida, tente novamente.\n");
+            printf("Escolha invÃ¡lida, tente novamente.\n");
         }
     }
     
