@@ -1,5 +1,4 @@
-  
-#include <stdio.h>
+ #include <stdio.h>
 #include <string.h>
 #include <stdio.h>
 #include <locale.h>
@@ -22,9 +21,11 @@
 #define BRANCHNEG 41 //Desvia para um local especfico na memria se o accumulator for negativo.
 #define BRANCHZERO 42 //Desvia para um local especfico na memria se o accumulator for zero.
 #define HALT 43 //Para (halt), ou seinstructionCountera, o programa concluiu sua tarefa.
+
 int menu_mostrar();
 void sml_menu();
 int validar_operador(int num); 
+void flush_in();
 
 int main(){
     //setlocale(LC_ALL, "Portuguese");
@@ -36,7 +37,7 @@ int main(){
     int i, verificar;
     int num, car_exe, teste, tamanho;
     int num_Arquivo = 1;
-    char arquivo_d[15], aux[4], c, date_c[100], date_e[100], date_s[100];
+    char arquivo_d[15], aux[4], c, date_c[100], date_e[100], objt[100];
 
     int existe;
 
@@ -57,6 +58,7 @@ int main(){
                     memory[instructionCounter] = 0;
             }
             existe = 0;
+            num_Arquivo = 1;
             while (existe == 0)
             {
                 strcpy(nome, "PROG");
@@ -105,6 +107,10 @@ int main(){
                 instructionCounter = 0;
                 printf("\n");
                 sml_menu();
+                printf("\n Informe a finalidade do programa: \n");
+                flush_in();
+                scanf("%[^\n]",objt);
+                
                 while (instructionCounter < 100){
                     fflush(stdin);
                     printf("%.2d \? ", instructionCounter);
@@ -129,10 +135,10 @@ int main(){
                 i = 0;
                 fprintf(arquivo, "%s %02d:%02d %s %02d/%02d/%4d\n", "Criado as:", data_hora_atual->tm_hour,data_hora_atual->tm_min,"em",data_hora_atual->tm_mday, data_hora_atual->tm_mon+1,data_hora_atual->tm_year+1900);
 
-               fprintf(arquivo, "Executado as: --:-- em --/--/----\n");
+                fprintf(arquivo, "%30s\n", objt);
 
                 while(i < instructionCounter){
-                    fprintf(arquivo, "%.2d \? %c%.4d\n", i, sinal[i], memory[i]);
+                    fprintf(arquivo, "%c%.4d\n", sinal[i], memory[i]);
                     i++;
                 }
                 printf("\n* Carga do programa concluida    *\n");
@@ -141,6 +147,45 @@ int main(){
                 system("pause");
             break;
         case 2:  
+            printf("Arquivos existentes: \n");
+
+            existe = 0;
+            num_Arquivo = 1;
+            while (existe == 0)
+            {
+                strcpy(nome, "PROG");
+                itoa(num_Arquivo, aux, 10);
+                tamanho = strlen(aux);
+                switch (tamanho)
+                {
+                case 1:
+                    strcat(nome, "00");
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                case 2:
+                    strcat(nome, "0");
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                case 3:
+                    strcat(nome, aux);
+                    strcat(nome, ".txt");
+                    break;
+                }
+                arquivo = fopen(nome, "r");
+                if (arquivo == NULL){
+                    existe == 1;
+                    break;
+                }
+                else
+                {
+                    printf("%s\n", nome);
+                }
+                fclose(arquivo);
+                num_Arquivo++;
+            }
+
             printf("* Para executar o programa, infrome o nome do arquivo : (Ex.PROG002)\n");
             scanf("%s", arquivo_d);
             strcat(arquivo_d, ".txt");
@@ -158,23 +203,16 @@ int main(){
                 }
                 instructionCounter = 0;
 
-                fgets(date_c,31,arquivo);
-                printf("%s\n", date_c);
+                fgets(date_c,32,arquivo);
+                printf("%s", date_c);
 
-                //fgets(date_e,34,arquivo);
-                /*
-                fprintf(arquivo, "%s %02d:%02d %s %02d/%02d/%4d\n", "Executado as:", data_hora_atual->tm_hour,data_hora_atual->tm_min,"em",data_hora_atual->tm_mday, data_hora_atual->tm_mon+1,data_hora_atual->tm_year+1900);
-                
-*/
-                //fseek(arquivo, 45, SEEK_CUR);
-                //fputs(arquivo, " 22:48 em 28/09/2021");
+                fgets(objt,31,arquivo);
+                printf("%s\n", objt);
 
-                //fgets(date_s,34,arquivo);
-                //fgets(date_e,34,arquivo);
 
-                while ((fscanf(arquivo, "%d %c %c%d\n", &i, &inter[instructionCounter], &sinal[instructionCounter], &memory[instructionCounter])) != EOF)
+                while ((fscanf(arquivo, "%c%d\n", &sinal[instructionCounter], &memory[instructionCounter])) != EOF)
                 {
-                    printf("%02d %c%04d\n",i, sinal[instructionCounter],memory[instructionCounter]);
+                    //printf("%02d %c%04d\n",i, sinal[instructionCounter],memory[instructionCounter]);
         
                     instructionCounter++;
                 }
@@ -277,12 +315,14 @@ int main(){
                     }
                 }
             }
+            system("pause");
             break;
         case 3:
 
             printf("Arquivos existentes: \n");
 
             existe = 0;
+            num_Arquivo = 1;
             while (existe == 0)
             {
                 strcpy(nome, "PROG");
@@ -386,9 +426,6 @@ void sml_menu(){
     printf("* local. Digite a sentinela -9999 para            *\n");
     printf("* encerrar a entrada do seu programa.             *\n");
 }
-void sml_exe(){
-    printf("* Bem vindo ao Simpletron!                        *\n");
-}
 int validar_operador(int num){
     switch (num){
             case VAL:
@@ -434,4 +471,8 @@ int validar_operador(int num){
             default:
             return 1;
     }
+}
+void flush_in(){ 
+    int ch;
+    while( (ch = fgetc(stdin)) != EOF && ch != '\n' ){} 
 }
