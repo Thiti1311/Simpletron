@@ -1,5 +1,4 @@
 Criado as: 11:39 em 03/10/2021
-Executado as:
 Soma 10 números digitados
 +2011
 +1012
