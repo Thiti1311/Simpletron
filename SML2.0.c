@@ -1,31 +1,42 @@
- #include <stdio.h>
+// Alunos: Thiago Felipe Viana Diniz ; João Victor Marinho Souza
+
+#include <stdio.h>
 #include <string.h>
 #include <stdio.h>
 #include <locale.h>
 #include <time.h>
 
 #define VAL 00
-//Operaes de entrada/sada:
-#define READ 10 //L uma palavra do terminal para um local especfico na memria.
-#define WRITE 11 //Escreve uma palavra de um local especfico na memria para o terminal.
-//Operaes de carregamento/armazenamento:
-#define LOAD 20 //Carrega uma palavra de um local especfico na memria para o accumulator.
-#define STORE 21 //Armazena uma palavra do accumulator para um local especfico na memria.
-//Operaes aritmticas:
-#define ADD 30 //Soma uma palavra de um local especfico na memria  palavra no accumulator (deixa o resultado no accumulator).
-#define SUBTRACT 31 //Subtrai uma palavra de um local especfico na memria da palavra no accumulator (deixa o resultado no accumulator).
-#define DIVIDE 32 //Divide uma palavra de um local especfico na memria pela palavra no accumulator (deixa o resultado no accumulator).
-#define MULTIPLY 33 //Multiplica uma palavra de um local especfico na memria pela palavra no accumulator (deixa o resultado no accumulator).
-//Operaes de transferncia de controle:
-#define BRANCH 40 //Desvia para um local especfico na memria.
-#define BRANCHNEG 41 //Desvia para um local especfico na memria se o accumulator for negativo.
-#define BRANCHZERO 42 //Desvia para um local especfico na memria se o accumulator for zero.
+//Opera  es de entrada/sa da:
+#define READ 10 //L  uma palavra do terminal para um local espec fico na mem ria.
+#define WRITE 11 //Escreve uma palavra de um local espec fico na mem ria para o terminal.
+//Opera  es de carregamento/armazenamento:
+#define LOAD 20 //Carrega uma palavra de um local espec fico na mem ria para o accumulator.
+#define STORE 21 //Armazena uma palavra do accumulator para um local espec fico na mem ria.
+//Opera  es aritm ticas:
+#define ADD 30 //Soma uma palavra de um local espec fico na mem ria   palavra no accumulator (deixa o resultado no accumulator).
+#define SUBTRACT 31 //Subtrai uma palavra de um local espec fico na mem ria da palavra no accumulator (deixa o resultado no accumulator).
+#define DIVIDE 32 //Divide uma palavra de um local espec fico na mem ria pela palavra no accumulator (deixa o resultado no accumulator).
+#define MULTIPLY 33 //Multiplica uma palavra de um local espec fico na mem ria pela palavra no accumulator (deixa o resultado no accumulator).
+//Opera  es de transfer ncia de controle:
+#define BRANCH 40 //Desvia para um local espec fico na mem ria.
+#define BRANCHNEG 41 //Desvia para um local espec fico na mem ria se o accumulator for negativo.
+#define BRANCHZERO 42 //Desvia para um local espec fico na mem ria se o accumulator for zero.
 #define HALT 43 //Para (halt), ou seinstructionCountera, o programa concluiu sua tarefa.
 
 int menu_mostrar();
 void sml_menu();
 int validar_operador(int num); 
 void flush_in();
+
+typedef struct {
+    char nome_arquivo[50];
+    char data_cria[50];
+    char hora_cria[50];
+    char data_exec[50];
+    char hora_exec[50];
+
+} t_Detalhes;
 
 int main(){
     //setlocale(LC_ALL, "Portuguese");
@@ -34,12 +45,10 @@ int main(){
     int memory[100], instructionCounter;
     int operand, operationCode, instructionRegister;
     int accumulator = 0;
-    int i, verificar;
+    int i, verificar, existe;
     int num, car_exe, teste, tamanho;
     int num_Arquivo = 1;
     char arquivo_d[15], aux[4], c, date_c[100], date_e[100], objt[100];
-
-    int existe;
 
     struct tm *data_hora_atual;     
     time_t segundos;
@@ -55,7 +64,7 @@ int main(){
     {
         case 1:
             for (instructionCounter = 0; instructionCounter < 100; instructionCounter++){
-                    memory[instructionCounter] = 0;
+                memory[instructionCounter] = 0;
             }
             existe = 0;
             num_Arquivo = 1;
@@ -83,20 +92,15 @@ int main(){
                 }
                 arquivo = fopen(nome, "r");
                 if (arquivo == NULL){
-                    //printf("O arquivo %s nao existe!\n", nome);
                     existe == 1;
                     break;
-                }
-                else
-                {
-                    //printf("O arquivo %s ja existe!\n", nome);
                 }
                 fclose(arquivo);
                 num_Arquivo++;
             }
 
             printf("\nNome do arquivo criado: %s\n", nome);
-            arquivo = fopen(nome, "w");
+            arquivo = fopen(nome, "wb");
                 if (arquivo == NULL){
                     printf("ERRO! O arquivo nao foi aberto!\n");
                 }
@@ -133,12 +137,18 @@ int main(){
                     instructionCounter++;
                 }
                 i = 0;
-                fprintf(arquivo, "%s %02d:%02d %s %02d/%02d/%4d\n", "Criado as:", data_hora_atual->tm_hour,data_hora_atual->tm_min,"em",data_hora_atual->tm_mday, data_hora_atual->tm_mon+1,data_hora_atual->tm_year+1900);
+                char ch;
+                //fprintf(arquivo, "%s %02d:%02d %s %02d/%02d/%4d\n", "Criado as:", data_hora_atual->tm_hour,data_hora_atual->tm_min,"em",data_hora_atual->tm_mday, data_hora_atual->tm_mon+1,data_hora_atual->tm_year+1900);
+                ch = "16:02 06/10/2021";
+                fwrite (ch, sizeof (char), 16, arquivo);
 
-                fprintf(arquivo, "%30s\n", objt);
+                //fprintf(arquivo, "%30s\n", objt);
+                fwrite (objt, sizeof (char), 30, arquivo);
 
                 while(i < instructionCounter){
-                    fprintf(arquivo, "%c%.4d\n", sinal[i], memory[i]);
+                    //fprintf(arquivo, "%c%.4d\n", sinal[i], memory[i]);
+                    fwrite (sinal[i], sizeof (char), 1, arquivo);
+                    fwrite (memory[i], sizeof (int), 4, arquivo);
                     i++;
                 }
                 printf("\n* Carga do programa concluida    *\n");
@@ -205,15 +215,15 @@ int main(){
 
                 fgets(date_c,32,arquivo);
                 printf("%s", date_c);
+                
+                printf("%s %02d:%02d %s %02d/%02d/%4d\n", "Executado as:", data_hora_atual->tm_hour,data_hora_atual->tm_min,"em",data_hora_atual->tm_mday, data_hora_atual->tm_mon+1,data_hora_atual->tm_year+1900);
 
                 fgets(objt,31,arquivo);
-                printf("%s\n", objt);
+                printf("%s", objt);
 
 
-                while ((fscanf(arquivo, "%c%d\n", &sinal[instructionCounter], &memory[instructionCounter])) != EOF)
+                while ((fscanf(arquivo, "%c%d", &sinal[instructionCounter], &memory[instructionCounter])) != EOF)
                 {
-                    //printf("%02d %c%04d\n",i, sinal[instructionCounter],memory[instructionCounter]);
-        
                     instructionCounter++;
                 }
 
